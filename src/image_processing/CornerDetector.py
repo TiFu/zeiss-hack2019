@@ -48,10 +48,12 @@ class CornerDetector:
 
         stencil = np.zeros(thresh.shape).astype(img.dtype)
         cv2.fillPoly(stencil, [biggest_shape], 255)
-        cutOut = cv2.bitwise_and(thresh, stencil)[y1:y2, x1:x2]
+        hull = cv2.convexHull(biggest_shape, False)
+        cv2.fillPoly(stencil, [hull], 255)
+        cutOut = cv2.bitwise_or(thresh, stencil)[y1:y2, x1:x2]
 
         # Detector parameters
-        blockSize = 6
+        blockSize = 12
         apertureSize = 3
         k = 0.05
 

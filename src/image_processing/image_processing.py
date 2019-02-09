@@ -1,6 +1,7 @@
 from ScaleDetector import ScaleDetector
 from CornerDetector import CornerDetector
 from LeastSquaresSolver import LeastSquaresSolver
+import numpy as np
 
 class ImageProcessing:
 
@@ -38,8 +39,8 @@ class ImageProcessing:
         realAR = self._convertToReal(pointsAR, scaleAR)
 
         # TODO: calculate
-        left = self.leastSquaresSolver.solve(realBL, realAL)
-       # right = self.leastSquaresSolver.solve(realBR, realAR)
+        left = self.leastSquaresSolver.solve(np.array(realBL), np.array(realAL))
+        right = self.leastSquaresSolver.solve(np.array(realBR), np.array(realAR))
         return (left, None)
     
     def _convertToReal(self, corners, scaleAndLeftMost):
