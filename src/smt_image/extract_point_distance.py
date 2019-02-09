@@ -4,7 +4,7 @@ import math
 def isCircle(area):
     radius = math.sqrt(area / math.pi)
 #    print("Radius: " + str(radius))
-    return radius >= 4.1 and radius <= 4.4
+    return (radius >= 5.3 and radius <= 5.7) or (radius >= 21.2 and radius <= 21.6)
 #    print("Contour: " + str(contour))
 #    print("--")
     return True
@@ -20,6 +20,7 @@ ret,thresh = cv2.threshold(imgray,60,255,0)
 cv2.imshow("Thresh", thresh)
 kernel = np.ones((3,3),np.uint8)
 thresh = cv2.dilate(thresh,kernel,iterations = 1)
+thresh = cv2.erode(thresh,kernel,iterations = 1)
 cv2.imshow("Eroded", thresh)
 thresh = cv2.bitwise_not(thresh)
 cv2.imshow("Thresh2", thresh)
@@ -45,9 +46,20 @@ for circle in circleCenters:
     cv2.circle(img, (circle[0], circle[1]), 4, (255,0,0), -1)
 # Calculate Distance between circles
 print(circleCenters)
+circleCenters.sort(key=lambda x: x[1])
 circles = np.array(circleCenters)
-circles.sort(axis=1)
-print(circles)
+#circles.sort(axis=1)
+print("Circles: " + str(circles))
+
+def findTopLeftMostCircle(circleCenters):
+    print(circleCenters)
+    sortedCenters = sorted(circleCenters, key=lambda x: x[0] * x[0] + x[1] * x[1])
+    print(sortedCenters)
+    return sortedCenters[0]
+topLeftCircle = findTopLeftMostCircle(circleCenters)
+cv2.circle(img, (topLeftCircle[0], topLeftCircle[1]), 4, (0,255,0), -1)
+print("Sorted Centers: "+ str(findTopLeftMostCircle(circleCenters)))
+
 clusters = []
 prev = None
 currentCluster =[]
