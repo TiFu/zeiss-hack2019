@@ -7,8 +7,8 @@ class LeastSquaresSolver:
         pass
 
     def solve(self, before, after):
-        print("Before: "+ str(before))
-        print("After: " + str(after))
+        #print("Before: "+ str(before))
+        #print("After: " + str(after))
         # Centro
         beforeCentroid = (before[0] + before[1]) / 2.0
         afterCentroid = (after[1] + after[0]) / 2.0
@@ -30,7 +30,7 @@ class LeastSquaresSolver:
 
         translation = - rotatedCentroidA + afterCentroid
 
-        print("Angle: " + str(np.rad2deg(angle)) + ", Translation: "+ str(translation))
+        #print("Angle: " + str(np.rad2deg(angle)) + ", Translation: "+ str(translation))
         return (angle, translation)
         # cos(theta) = u dot v / (|u| * |v|)
 

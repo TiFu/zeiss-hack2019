@@ -56,11 +56,7 @@ class ImageProcessing:
     
     def _convertToReal(self, corners, scaleAndLeftMost):
         corners = list(corners)
-        print("Corners: ", corners)
-        print("SCale and left most: " + str(scaleAndLeftMost))
         scale, leftMostPoint = scaleAndLeftMost
-        print("LEft most: " + str(leftMostPoint))
-        print("Scale: " + str(scale))
         return map(lambda corner: self._convertToMM(self._convertCornerToCordsRelativeToLeftMostPoint(corner, leftMostPoint), scale), corners)
 
     def _convertCornerToCordsRelativeToLeftMostPoint(self, corner, leftMostPoint):

@@ -9,7 +9,7 @@ class ScaleDetector:
 
     def _isCircle(self, area):
         radius = math.sqrt(area / math.pi)
-        print("Radius: " + str(radius))
+        #print("Radius: " + str(radius))
         return (radius >= 5.3 and radius <= 5.7) or (radius >= 21.2 and radius <= 21.6)
 
     def _reject_outliers(self, data, m=2):
@@ -74,7 +74,7 @@ class ScaleDetector:
         clusters = np.array(clusters)
         all_distances = []
         for cluster in clusters:
-            print(cluster)
+            #print(cluster)
             cluster = np.array(cluster)[:,0]
             cluster.sort()
 
@@ -88,7 +88,7 @@ class ScaleDetector:
 
 
     def _findTopLeftMostCircle(self, circleCenters):
-        print(circleCenters)
+        #print(circleCenters)
         sortedCenters = sorted(circleCenters, key=lambda x: x[0] * x[0] + x[1] * x[1])
-        print(sortedCenters)
+        #print(sortedCenters)
         return sortedCenters[0]
