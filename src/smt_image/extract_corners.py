@@ -72,9 +72,10 @@ for i in range(dst_norm.shape[0]):
             corners.append((j, i))
             cv2.circle(cutOut, (j,i), 5, (0), 2)
 
-#corners.sort(key=lambda x: x[0])
+print("Corners: " + str(corners))
+corners.sort(key=lambda x: x[1])
 corners = np.array(corners)
-corners.sort(axis = 1)
+#corners.sort(axis = 1)
 clusters = []
 currentCluster = []
 prev = None
