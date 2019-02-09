@@ -1,9 +1,12 @@
-from ScaleDetector import ScaleDetector
+
+import cv2
+import numpy as np
+
 from CornerDetector import CornerDetector
 from LeastSquaresSolver import LeastSquaresSolver
 from OverlayProcessor import OverlayProcessor
-import cv2
-import numpy as np
+from ScaleDetector import ScaleDetector
+
 
 class ImageProcessing:
 
@@ -12,6 +15,9 @@ class ImageProcessing:
         self.cornerDetector = CornerDetector()
         self.leastSquaresSolver = LeastSquaresSolver()
         self.overlayProcessor = OverlayProcessor()
+
+        self.percentile50 = 0.4321768046926515
+        self.percentile80 = 0.9881273553137421
 
     def determineDisplacement(self, beforeLeft, beforeRight, afterLeft, afterRight):
         """Returns displacement (angle, tx, ty) for (left, right, overlayLeft, overlayRight)
@@ -52,12 +58,28 @@ class ImageProcessing:
 #        cv2.imshow("Left", overlayImageLeft)
 #        cv2.imshow("Right", overlayImageRight)
 #        cv2.waitKey()
-        return (left, right, overlayImageLeft, overlayImageRight)
+        errorLeft = np.abs(left[1][0]) + np.abs(left[1][1])
+        errorRight = np.abs(right[1][0]) + np.abs(right[1][1])
+
+        print("Error is: " + str(errorLeft) + ", " + str(errorRight))
+
+        qualityScoreLeft = self._convertToQualityScore(errorLeft)
+        qualityScoreRight = self._convertToQualityScore(errorRight)
+        print("Quality Score: " + str((qualityScoreLeft + qualityScoreRight) / 2))
+        return (left, right, overlayImageLeft, overlayImageRight, (qualityScoreLeft + qualityScoreRight) / 2)
     
+    def _convertToQualityScore(self, value):
+        qualityScore = (value - self.percentile50) / (np.abs(self.percentile50 - self.percentile80))
+        return 1 - min(1, max(0, qualityScore))
+
     def _convertToReal(self, corners, scaleAndLeftMost):
         corners = list(corners)
+        print("Corners: ", corners)
+        print("SCale and left most: " + str(scaleAndLeftMost))
         scale, leftMostPoint = scaleAndLeftMost
-        return map(lambda corner: self._convertToMM(self._convertCornerToCordsRelativeToLeftMostPoint(corner, leftMostPoint), scale), corners)
+        print("LEft most: " + str(leftMostPoint))
+        print("Scale: " + str(scale))
+        return list(map(lambda corner: self._convertToMM(self._convertCornerToCordsRelativeToLeftMostPoint(corner, leftMostPoint), scale), corners))
 
     def _convertCornerToCordsRelativeToLeftMostPoint(self, corner, leftMostPoint):
         return (corner[0] - leftMostPoint[0], corner[1] - leftMostPoint[1])

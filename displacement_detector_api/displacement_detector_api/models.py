@@ -72,11 +72,11 @@ class AnalysisImage(models.Model):
         prb=cv2.imread(self.picture_right_before.file.file.name)
         pra=cv2.imread(self.picture_right_after.file.file.name)
 
-        displ_left, displ_right, overlay_left, overlay_right=image_processing.determineDisplacement(plb, prb, pla, pra)
+        displ_left, displ_right, overlay_left, overlay_right, quality_score =image_processing.determineDisplacement(plb, prb, pla, pra)
 
         self.in_spec=True
         self.defect='surface'
-        self.quality=1.8
+        self.quality=quality_score
         self.top_corner_left='(2,3)'
         self.top_corner_right='(2,4)'
         self.bot_corner_left='(0,3)'

@@ -33,11 +33,12 @@ with outputFile:
         afterLeft = cv2.imread(FOLDER + files[2])
         afterRight = cv2.imread(FOLDER + files[3])
         try:
-            displLeft, displRight, _, _ = imageProcessor.determineDisplacement(beforeLeft, beforeRight, afterLeft, afterRight)
+            displLeft, displRight, _, _, qualityScore = imageProcessor.determineDisplacement(beforeLeft, beforeRight, afterLeft, afterRight)
+            print("Quality Score: " + str(qualityScore))
         except:
             continue
         
-        outputFile.write(str(id) + "," + str(displLeft[0]) + "," + str(displLeft[1][0]) + "," + str(displLeft[1][1]) + "," + str(displRight[0]) + "," + str(displRight[1][0]) + "," + str(displRight[1][1]) + "\n")
+        outputFile.write(str(id) + "," + str(displLeft[0]) + "," + str(displLeft[1][0]) + "," + str(displLeft[1][1]) + "," + str(displRight[0]) + "," + str(displRight[1][0]) + "," + str(displRight[1][1]) + "," + str(qualityScore) + "\n")
         outputFile.flush()
         print(displLeft)
         print(displRight)
