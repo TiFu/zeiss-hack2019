@@ -5,7 +5,9 @@ np.set_printoptions(threshold=np.nan)
 
 
 
-img = cv2.imread("../../data/smt_image/342547_20160721-204408_R.tif")
+img = cv2.imread("../../data/smt_image/343216_20160805-142843_L.tif")
+#img = cv2.imread("../../data/smt_image/342547_20160721-204408_R.tif")
+left = True
 
 imgray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
 
@@ -70,15 +72,14 @@ for i in range(dst_norm.shape[0]):
             corners.append((j, i))
             cv2.circle(cutOut, (j,i), 5, (0), 2)
 
+#corners.sort(key=lambda x: x[0])
 corners = np.array(corners)
-print(corners)
 corners.sort(axis = 1)
-
 clusters = []
 currentCluster = []
 prev = None
 for corner in corners:
-    if prev is None or abs(prev[0] - corner[0]) <= 2:
+    if prev is None or abs(prev[1] - corner[1]) <= 2:
         currentCluster.append(corner)
     else:
         clusters.append(currentCluster)
@@ -94,16 +95,37 @@ pp.pprint(clusters)
 #print(clusters)
 corners = []
 for cluster in clusters:
-    corner = np.array(cluster).mean(axis = 0)
-    corners.append(corner)
+    cluster.sort(key=lambda x: x[0])
+    print("Cluster: " + str(cluster))
+    if left:    # min y
+        min = (np.Inf, 0)
+        for corner in cluster:
+            if corner[0] < min[0]:
+                min = corner
+        corners.append(min)
+    else: # max y
+        max = (np.NINF, 0)
+        for corner in cluster:
+            if corner[0] > max[0]:
+                max = corner
+        corners.append(max)
+        
+#    corners.append(corner)
 
 print(corners)
 
 print("Top Left: " + str(corners[0]))
 print("Bottom Left: " + str(corners[1]))
+# Transform corners back to original image space
+originalCorners1 = (int(x1 + corners[0][0]), int(y1 + corners[0][1]))
+originalCorners2 = (int(x1 + corners[1][0]), int(y1 + corners[1][1]))
+cv2.circle(img, originalCorners1, 5, (0,255,0), 2)
+cv2.circle(img, originalCorners2, 5, (0,255,0), 2)
 
 
 cv2.imshow("cut out", cutOut)
 cv2.drawContours(img, [biggest_shape], -1, (255,0,0), 1)
+
+
 cv2.imshow("Test", img)
 cv2.waitKey()
