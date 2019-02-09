@@ -1,1 +1,1 @@
-import ImageProcessing from image_processing
+from image_processing import ImageProcessing

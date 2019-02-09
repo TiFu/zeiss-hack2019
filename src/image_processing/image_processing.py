@@ -1,6 +1,8 @@
 from ScaleDetector import ScaleDetector
 from CornerDetector import CornerDetector
 from LeastSquaresSolver import LeastSquaresSolver
+from OverlayProcessor import OverlayProcessor
+import cv2
 import numpy as np
 
 class ImageProcessing:
@@ -9,9 +11,10 @@ class ImageProcessing:
         self.scaleDetector = ScaleDetector()
         self.cornerDetector = CornerDetector()
         self.leastSquaresSolver = LeastSquaresSolver()
+        self.overlayProcessor = OverlayProcessor()
 
     def determineDisplacement(self, beforeLeft, beforeRight, afterLeft, afterRight):
-        """Returns displacement (angle, tx, ty) for (left, right)
+        """Returns displacement (angle, tx, ty) for (left, right, overlayLeft, overlayRight)
         
         Arguments:
             beforeLeft {[type]} -- [description]
@@ -41,7 +44,15 @@ class ImageProcessing:
         # TODO: calculate
         left = self.leastSquaresSolver.solve(np.array(realBL), np.array(realAL))
         right = self.leastSquaresSolver.solve(np.array(realBR), np.array(realAR))
-        return (left, None)
+
+        # Calculate overlay image
+        overlayImageLeft = self.overlayProcessor.overlay(beforeLeft, afterLeft, scaleBL[1], scaleAL[1])
+        overlayImageRight = self.overlayProcessor.overlay(beforeRight, afterRight, scaleBR[1], scaleAR[1])
+
+#        cv2.imshow("Left", overlayImageLeft)
+#        cv2.imshow("Right", overlayImageRight)
+#        cv2.waitKey()
+        return (left, right, overlayImageLeft, overlayImageRight)
     
     def _convertToReal(self, corners, scaleAndLeftMost):
         corners = list(corners)

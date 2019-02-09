@@ -84,7 +84,7 @@ class ScaleDetector:
         xDist = self._reject_outliers(np.array(all_distances)).mean()
         topLeftCircle = self._findTopLeftMostCircle(circleCenters)
 
-        return xDist, topLeftCircle
+        return xDist, np.array(topLeftCircle)
 
 
     def _findTopLeftMostCircle(self, circleCenters):

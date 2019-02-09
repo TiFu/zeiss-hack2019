@@ -70,7 +70,7 @@ class CornerDetector:
             for j in range(dst_norm.shape[1]):
                 if int(dst_norm[i,j]) > threshold:
                     corners.append((j, i))
-                    cv2.circle(cutOut, (j,i), 5, (0), 2)
+#                    cv2.circle(cutOut, (j,i), 5, (0), 2)
 
         corners.sort(key=lambda x: x[1])
         corners = np.array(corners)
@@ -120,10 +120,10 @@ class CornerDetector:
         # Transform corners back to original image space
         originalCorners1 = (int(x1 + corners[0][0]), int(y1 + corners[0][1]))
         originalCorners2 = (int(x1 + corners[1][0]), int(y1 + corners[1][1]))
-        cv2.circle(img, originalCorners1, 5, (0,255,0), 2)
-        cv2.circle(img, originalCorners2, 5, (0,255,0), 2)
+#        cv2.circle(img, originalCorners1, 5, (0,255,0), 2)
+#        cv2.circle(img, originalCorners2, 5, (0,255,0), 2)
 
-        cv2.drawContours(img, [biggest_shape], -1, (255,0,0), 1)
-        cv2.imshow("Test", img)
-        cv2.waitKey()
+#        cv2.drawContours(img, [biggest_shape], -1, (255,0,0), 1)
+#        cv2.imshow("Test", img)
+#        cv2.waitKey()
         return originalCorners1, originalCorners2
