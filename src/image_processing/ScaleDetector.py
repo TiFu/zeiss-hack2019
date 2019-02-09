@@ -1,5 +1,6 @@
 import numpy as np
 import cv2
+import math
 
 class ScaleDetector:
 
@@ -64,6 +65,7 @@ class ScaleDetector:
             else:
                 clusters.append(currentCluster)
                 currentCluster = []
+                currentCluster.append(circle)
             prev = circle
 
         if len(currentCluster) > 0:
@@ -72,19 +74,20 @@ class ScaleDetector:
         clusters = np.array(clusters)
         all_distances = []
         for cluster in clusters:
+            print(cluster)
             cluster = np.array(cluster)[:,0]
             cluster.sort()
 
             ediff = np.ediff1d(cluster)
             all_distances.extend(ediff)
 
-        xDist = self.reject_outliers(np.array(all_distances)).mean()
-        topLeftCircle = findTopLeftMostCircle(circleCenters)
+        xDist = self._reject_outliers(np.array(all_distances)).mean()
+        topLeftCircle = self._findTopLeftMostCircle(circleCenters)
 
         return xDist, topLeftCircle
 
 
-    def findTopLeftMostCircle(circleCenters):
+    def _findTopLeftMostCircle(self, circleCenters):
         print(circleCenters)
         sortedCenters = sorted(circleCenters, key=lambda x: x[0] * x[0] + x[1] * x[1])
         print(sortedCenters)

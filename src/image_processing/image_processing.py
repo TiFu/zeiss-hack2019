@@ -1,14 +1,27 @@
 from ScaleDetector import ScaleDetector
 from CornerDetector import CornerDetector
+from LeastSquaresSolver import LeastSquaresSolver
 
 class ImageProcessing:
 
     def __init__(self):
         self.scaleDetector = ScaleDetector()
         self.cornerDetector = CornerDetector()
+        self.leastSquaresSolver = LeastSquaresSolver()
 
+    def determineDisplacement(self, beforeLeft, beforeRight, afterLeft, afterRight):
+        """Returns displacement (angle, tx, ty) for (left, right)
+        
+        Arguments:
+            beforeLeft {[type]} -- [description]
+            beforeRight {[type]} -- [description]
+            afterLeft {[type]} -- [description]
+            afterRight {[type]} -- [description]
+        
+        Returns:
+            [type] -- [description]
+        """
 
-    def determineDisplacement(beforeLeft, beforeRight, afterLeft, afterRight):
         scaleBL =  self.scaleDetector.detectScaleAndLeftMostPoint(beforeLeft) # (scale, leftMostPoint)
         scaleAL = self.scaleDetector.detectScaleAndLeftMostPoint(afterLeft)
         scaleBR = self.scaleDetector.detectScaleAndLeftMostPoint(beforeRight)
@@ -24,11 +37,19 @@ class ImageProcessing:
         realBR = self._convertToReal(pointsBR, scaleBR)
         realAR = self._convertToReal(pointsAR, scaleAR)
 
-        # TODO: calculate 
+        # TODO: calculate
+        left = self.leastSquaresSolver.solve(realBL, realAL)
+       # right = self.leastSquaresSolver.solve(realBR, realAR)
+        return (left, None)
     
     def _convertToReal(self, corners, scaleAndLeftMost):
-        leftMostPoint, scale = scaleAndLeftMost
-        return map(lambda corner: self._convertToMM(self._convertCornerToCordsRelativeToLeftMostPoint(corner, leftMostPoint), scale), conrers)
+        corners = list(corners)
+        print("Corners: ", corners)
+        print("SCale and left most: " + str(scaleAndLeftMost))
+        scale, leftMostPoint = scaleAndLeftMost
+        print("LEft most: " + str(leftMostPoint))
+        print("Scale: " + str(scale))
+        return map(lambda corner: self._convertToMM(self._convertCornerToCordsRelativeToLeftMostPoint(corner, leftMostPoint), scale), corners)
 
     def _convertCornerToCordsRelativeToLeftMostPoint(self, corner, leftMostPoint):
         return (corner[0] - leftMostPoint[0], corner[1] - leftMostPoint[1])

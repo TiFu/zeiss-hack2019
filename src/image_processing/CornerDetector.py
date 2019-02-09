@@ -1,4 +1,5 @@
-
+import cv2
+import numpy as np
 
 class CornerDetector:
 
@@ -81,6 +82,7 @@ class CornerDetector:
             else:
                 clusters.append(currentCluster)
                 currentCluster = []
+                currentCluster.append(corner)
             prev = corner
 
         if len(currentCluster) > 0:
@@ -95,17 +97,17 @@ class CornerDetector:
             cluster.sort(key=lambda x: x[0])
             print("Cluster: " + str(cluster))
             if left:    # min y
-                min = (np.Inf, 0)
+                minimum = (np.Inf, 0)
                 for corner in cluster:
-                    if corner[0] < min[0]:
-                        min = corner
-                corners.append(min)
+                    if corner[0] < minimum[0]:
+                        minimum = corner
+                corners.append(minimum)
             else: # max y
-                max = (np.NINF, 0)
+                maximum = (np.NINF, 0)
                 for corner in cluster:
-                    if corner[0] > max[0]:
-                        max = corner
-                corners.append(max)
+                    if corner[0] > maximum[0]:
+                        maximum = corner
+                corners.append(maximum)
                 
         #    corners.append(corner)
 
