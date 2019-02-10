@@ -30,3 +30,7 @@ code {
 .table-header {
   background-color: #343a40 !important;
 }
+
+.font_increase {
+  font-size: 1.5rem;
+}
