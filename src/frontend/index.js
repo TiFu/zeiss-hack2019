@@ -126,7 +126,8 @@ function submitFiles() {
     console.log("first done 3")
     form.append("picture_right_after", $("#rightAfter")[0].files[0]);
     console.log("first done 4")
-
+    $("#upload_form").hide();
+    $("#upload_spinner").show();
     $.ajax({
         type: "POST",
         url: host + "/analysis-images/",
@@ -136,6 +137,8 @@ function submitFiles() {
       }).done(function (data) {
         window.location = "./details.html?id=" + data["id"]
       }).fail(function() {
+          $("#upload_form").show();
+          $("#upload_spinner").show();
           console.log("failed uploading");
       });
 }
