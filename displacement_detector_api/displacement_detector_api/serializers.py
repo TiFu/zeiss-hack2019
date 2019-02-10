@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 
+from displacement_detector_api.image_processing.position_change import calculate_position_change
 from displacement_detector_api.models import EvaluationResult, AnalysisImage
 
 
@@ -13,7 +14,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 class EvaluationResultSerializer(serializers.ModelSerializer):
     class Meta:
         model = EvaluationResult
-        exclude = []
+        fields = ('all_positions',)
 
 
 

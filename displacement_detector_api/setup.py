@@ -22,7 +22,9 @@ setup(
             'ruamel.yaml==0.15.50',
             'django-cors-headers==2.4.0',
             'django_filter==2.0.0',
-            'pillow'
+            'pillow',
+            'pandas',
+            'numpy',
       ],
       extras_require={
           'local': options+['django-debug-toolbar==1.9.1'],

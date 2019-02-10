@@ -1,9 +1,13 @@
 import cv2
 import datetime
 
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
+from PIL import Image
 
+from displacement_detector_api import settings
 from displacement_detector_api.image_processing.image_processing import ImageProcessing
+from displacement_detector_api.image_processing.position_change import calculate_position_change
 
 
 class EvaluationResult(models.Model):
@@ -43,6 +47,9 @@ class AnalysisImage(models.Model):
     date_before = models.DateTimeField(null=True, blank=True)
     date_after = models.DateTimeField(null=True, blank=True)
 
+    overlay_left = models.CharField(null=True, blank=True, max_length=256)
+    overlay_right = models.CharField(null=True, blank=True, max_length=256)
+
     DEFECT_CHOICES = (
         ('none', 'none'),
         ('surface', 'surface'),
@@ -80,14 +87,35 @@ class AnalysisImage(models.Model):
         self.defect='position'
         self.quality=quality_score
         self.rotation_val_left=displ_left[0]
-        self.rotation_val_right=displ_left[1]
+        self.rotation_val_right=displ_right[0]
         self.translation_val_left_x=displ_left[1][0]
         self.translation_val_left_y=displ_left[1][1]
         self.translation_val_right_x=displ_right[1][0]
         self.translation_val_right_y=displ_right[1][1]
 
+        save_image_as_png(self.picture_left_before.file.file.name, self.picture_left_before.path)
+        save_image_as_png(self.picture_right_before.file.file.name, self.picture_right_before.path)
+        save_image_as_png(self.picture_left_after.file.file.name, self.picture_left_after.path)
+        save_image_as_png(self.picture_right_after.file.file.name, self.picture_right_after.path)
+
+        self.overlay_left = save_npy_as_img(overlay_left, './media/media/' + self.picture_left_before.name.split('_')[0] + '_overlay_left.png' )
+        self.overlay_right = save_npy_as_img(overlay_right, './media/media/' + self.picture_left_before.name.split('_')[0] + '_overlay_right.png' )
+
+        self.overlay_left = 'http://localhost:8765/media/media/' + self.picture_left_before.name.split('_')[0] + '_overlay_left.png'
+        self.overlay_right = 'http://localhost:8765/media/media/'+ self.picture_left_before.name.split('_')[0] + '_overlay_right.png'
+
+
+        self.picture_right_after.url.replace('tif', 'png')
+
         return self
 
+def save_image_as_png(path, path_out):
+    im = Image.open(path)
+    im.mode = 'I'
+    im.point(lambda i:i*(1./256)).convert('L').save(path_out.replace('tif', 'png').replace('media', 'media/media'))
 
-
+def save_npy_as_img(array, path):
+    im = Image.fromarray(array)
+    im.save(path)
+    return path
 
