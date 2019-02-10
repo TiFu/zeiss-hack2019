@@ -82,6 +82,7 @@ function makeDisplacementOverview(data) {
         text: 'Distribution of Translation in Millimeter between first and second image'
         },
         xAxis: [{
+            title: { "text": "Translation in Millimeter" },
         categories: data[0]
         }],
         yAxis: [{ // Primary yAxis
