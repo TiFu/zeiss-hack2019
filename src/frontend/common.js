@@ -1,4 +1,4 @@
-const host = "http://bec160b4.ngrok.io"
+const host = "https://cbc51386.ngrok.io"
 
 function dateFormat(dateString) {
     if (dateString == null) {
@@ -22,7 +22,7 @@ let formatDate = dateFormat;
 function getBadgeForEntry(quality) {
     if (quality >= 1) {
         return "success"
-    } else if (quality >= 0) {
+    } else if (quality > 0) {
         return "warning"
     } else {
         return "danger"

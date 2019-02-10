@@ -43,7 +43,7 @@ function generateTableRow(dataEntry) {
         dataEntry["picture_id"].toString(),
         dateFormat(dataEntry["date_after"]),
         formatSpec(dataEntry),
-        (dataEntry["defect"] == null ? "" : formatDefect(dataEntry["defect"])),
+        (dataEntry["defect"] == null ? "" : formatDefect(dataEntry["defect"], !dataEntry["in_spec"])),
         "<span class=\"badge badge-" + badge + " quality_score\">" + numberFormat(dataEntry["quality"]) + "</span>"
     ]
 }
@@ -56,13 +56,15 @@ function formatSpec(dataEntry) {
     }
 }
 
-function formatDefect(type) {
-    if (type == "position") {
+function formatDefect(type, spec) {
+    if (type == "position" && spec) {
         return "Position out of spec."
-    } else if (type == "surface") {
+    } else if (type == "surface" && spec) {
         return "Surface was damaged."
-    } else {
+    } else if (spec) {
         return "Unknown defect."
+    } else {
+        return "";
     }
 }
 
