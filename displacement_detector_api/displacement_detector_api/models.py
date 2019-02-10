@@ -33,6 +33,13 @@ class AnalysisImage(models.Model):
     picture_left_after = models.ImageField(upload_to='media/', null=True)
     picture_right_after = models.ImageField(upload_to='media/', null=True)
 
+    rotation_val_left = models.DecimalField(blank=True, null=True, max_digits=12, decimal_places=4)
+    rotation_val_right = models.DecimalField(blank=True, null=True, max_digits=12, decimal_places=4)
+    translation_val_left_x = models.DecimalField(blank=True, null=True, max_digits=12, decimal_places=4)
+    translation_val_left_y = models.DecimalField(blank=True, null=True, max_digits=12, decimal_places=4)
+    translation_val_right_x = models.DecimalField(blank=True, null=True, max_digits=12, decimal_places=4)
+    translation_val_right_y = models.DecimalField(blank=True, null=True, max_digits=12, decimal_places=4)
+
     date_before = models.DateTimeField(null=True, blank=True)
     date_after = models.DateTimeField(null=True, blank=True)
 
@@ -45,11 +52,6 @@ class AnalysisImage(models.Model):
     in_spec = models.NullBooleanField(blank=True, null=True)
     defect = models.CharField(choices=DEFECT_CHOICES, blank=True, null=True, max_length=32)
     quality = models.DecimalField(blank=True, null=True, decimal_places=4, max_digits=12)
-
-    top_corner_left = models.CharField(blank=True, null=True, max_length=32)
-    top_corner_right = models.CharField(blank=True, null=True, max_length=32)
-    bot_corner_left = models.CharField(blank=True, null=True, max_length=32)
-    bot_corner_right = models.CharField(blank=True, null=True, max_length=32)
     rotation_val = models.DecimalField(blank=True, null=True, decimal_places=4, max_digits=12)
 
     def save(self, *args, **kwargs):
@@ -74,14 +76,15 @@ class AnalysisImage(models.Model):
 
         displ_left, displ_right, overlay_left, overlay_right, quality_score =image_processing.determineDisplacement(plb, prb, pla, pra)
 
-        self.in_spec=True
-        self.defect='surface'
+        self.in_spec=quality_score<=0
+        self.defect='position'
         self.quality=quality_score
-        self.top_corner_left='(2,3)'
-        self.top_corner_right='(2,4)'
-        self.bot_corner_left='(0,3)'
-        self.bot_corner_right='(0,7)'
-        self.rotation_val=displ_left[0]
+        self.rotation_val_left=displ_left[0]
+        self.rotation_val_right=displ_left[1]
+        self.translation_val_left_x=displ_left[1][0]
+        self.translation_val_left_y=displ_left[1][1]
+        self.translation_val_right_x=displ_right[1][0]
+        self.translation_val_right_y=displ_right[1][1]
 
         return self
 
