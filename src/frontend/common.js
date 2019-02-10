@@ -1,3 +1,5 @@
+const host = "http://bec160b4.ngrok.io"
+
 function dateFormat(dateString) {
     if (dateString == null) {
         return "";

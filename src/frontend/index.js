@@ -17,7 +17,7 @@ $(document).ready(function($) {
 
 $(document).ready(function($) {
     var trainings = [];
-    $.getJSON("http://bec160b4.ngrok.io/analysis-images/", function (data) {
+    $.getJSON(host + "/analysis-images/", function (data) {
         $("#loading-spinner").hide();
         $("#content").show();
         makeDisplacementOverview(data["distribution"])
@@ -127,7 +127,7 @@ function submitFiles() {
 
     $.ajax({
         type: "POST",
-        url: "http://bec160b4.ngrok.io/analysis-images/",
+        url: host + "/analysis-images/",
         data: form,
         contentType: false, // NEEDED, DON'T OMIT THIS (requires jQuery 1.6+)
         processData: false, 

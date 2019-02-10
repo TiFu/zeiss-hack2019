@@ -16,11 +16,11 @@ function getUrlParameter(sParam) {
 
 
 $(document).ready(function() {
-    $.getJSON("http://bec160b4.ngrok.io/analysis-images/" + getUrlParameter("id"), function (data) {
+    $.getJSON(host + "/analysis-images/" + getUrlParameter("id"), function (data) {
         $("#id-header").html("Sample " + data["picture_id"]);
 
-        $("#overlay_left").attr("src", data["overlay_left"].replace("http://localhost:8765", "http://bec160b4.ngrok.io"));
-        $("#overlay_right").attr("src", data["overlay_right"].replace("http://localhost:8765", "http://bec160b4.ngrok.io"))
+        $("#overlay_left").attr("src", data["overlay_left"].replace("http://localhost:8765", host));
+        $("#overlay_right").attr("src", data["overlay_right"].replace("http://localhost:8765", host))
 
         $("#left_before").attr("src", data["picture_left_before"].replace(".tif", ".png"))
         $("#left_after").attr("src", data["picture_left_after"].replace(".tif", ".png"))
@@ -28,8 +28,8 @@ $(document).ready(function() {
         $("#right_after").attr("src", data["picture_right_after"].replace(".tif", ".png"))
         $("#time").html("<b>Date:</b> " + dateFormat(data["date_before"]) + " - " + dateFormat(data["date_after"]))
         console.log(data)
-        $("#transform_left").html("(" + numberFormat(data["translation_val_left_x"]) + ", " + numberFormat(data["translation_val_left_y"]) + ")")
-        $("#transform_right").html("(" + numberFormat(data["translation_val_right_x"]) + ", " + numberFormat(data["translation_val_right_y"]) + ")")
+        $("#transform_left").html("(" + numberFormat(data["translation_val_left_x"]) + " mm, " + numberFormat(data["translation_val_left_y"]) + " mm)")
+        $("#transform_right").html("(" + numberFormat(data["translation_val_right_x"]) + " mm, " + numberFormat(data["translation_val_right_y"]) + " mm)")
         $("#rotation_left").html(angleFormat(data["rotation_val_left"]))
         $("#rotation_right").html(angleFormat(data["rotation_val_right"]))
 
