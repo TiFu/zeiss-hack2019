@@ -10,27 +10,29 @@ $(document).ready(function() {
 
 $(document).ready(function($) {
     $(".clickable-row").click(function() {
+        console.log("row clicked?")
         window.location = $(this).data("href");
     });
 });
 
 $(document).ready(function($) {
     var trainings = [];
-    $.getJSON("http://bec160b4.ngrok.io/analysis-images/", function (data) {
-
+    $.getJSON(host + "/analysis-images/", function (data) {
+        $("#loading-spinner").hide();
+        $("#content").show();
+        makeDisplacementOverview(data["distribution"])
+        data = data["data"]
         for (var i = 0; i < data.length; i++) {
+            data[i]["in_spec"] = !data[i]["in_spec"]
             row = table.row.add(generateTableRow(data[i])).draw().node();
             $(row).addClass("clickable-row");
             $(row).data("href", "./details.html?id=" + data[i]["id"])
+            $(row).click(function() {
+                window.location = $(this).data("href");
+            })
+            console.log($(row).data("href"))
         }
     });
-});
-
-$(document).ready(function($) {
-    makeDisplacementOverview([
-        [0, 1, 2, 3, 4, 5, 6],
-        [10, 20, 30, 20, 10, 0, 5]
-    ])
 });
 
 
@@ -64,34 +66,11 @@ function formatDefect(type) {
     }
 }
 
-function numberFormat(number) {
-    if (number == null) {
-        return (0).toFixed(2);
-    }
-    return Number.parseFloat(number).toFixed(2);
-}
 
-function dateFormat(dateString) {
-    if (dateString == null) {
-        return "";
-    }
-    const m = new Date(dateString)
-    let formatted = (m.getUTCDate()) +"."+ (m.getUTCMonth()+1) +"."+ m.getUTCFullYear() + " " + m.getUTCHours() + ":" + m.getUTCMinutes() + ":" + m.getUTCSeconds();
-    return formatted;
-}
-
-function getBadgeForEntry(quality) {
-    if (quality >= 1) {
-        return "success"
-    } else if (quality >= 0) {
-        return "warning"
-    } else {
-        return "danger"
-    }
-}
 
 
 function makeDisplacementOverview(data) {
+    
     Highcharts.chart('chart_container', {
         credits: {
             enabled: false
@@ -118,20 +97,44 @@ function makeDisplacementOverview(data) {
             color: Highcharts.getOptions().colors[1]
             }
         }
-        }],
-    
-        tooltip: {
-        shared: true
-        },
-    
+        }],    
         series: [{
-        name: 'Displacement in Millimeter',
+        name: 'Samples',
         type: 'column',
         yAxis: 0,
         data: data[1],
         tooltip: {
-            pointFormat: '<span style="font-weight: bold; color: {series.color}">{series.name}</span>: <b>{point.y:.2f} mm</b> '
+            headerFormat: '',
+            formatter: function () {
+                return '<span style="font-weight: bold; color: {series.color}">{series.name}</span>: <b>{point.y:.0f}</b> '
+            }
         }
         }]
     });
+}
+
+function submitFiles() {
+    console.log("submitting files")
+    var form = new FormData(); 
+//    console.log($("#"))
+    form.append("picture_left_before", $("#leftBefore")[0].files[0]);
+    console.log("first done")
+    form.append("picture_left_after", $("#leftAfter")[0].files[0]);
+    console.log("first done 2")
+    form.append("picture_right_before", $("#rightBefore")[0].files[0]);
+    console.log("first done 3")
+    form.append("picture_right_after", $("#rightAfter")[0].files[0]);
+    console.log("first done 4")
+
+    $.ajax({
+        type: "POST",
+        url: host + "/analysis-images/",
+        data: form,
+        contentType: false, // NEEDED, DON'T OMIT THIS (requires jQuery 1.6+)
+        processData: false, 
+      }).done(function (data) {
+        window.location = "./details.html?id=" + data["id"]
+      }).fail(function() {
+          console.log("failed uploading");
+      });
 }
