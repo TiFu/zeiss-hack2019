@@ -102,7 +102,7 @@ function makeDisplacementOverview(data) {
         }
         }],    
         series: [{
-        name: 'Samples',
+        name: 'Samples (80%-Percentile: 0.98, 50%-Percentile: 0.43)' ,
         type: 'column',
         yAxis: 0,
         data: data[1],
