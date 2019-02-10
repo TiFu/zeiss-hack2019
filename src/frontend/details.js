@@ -17,6 +17,8 @@ function getUrlParameter(sParam) {
 
 $(document).ready(function() {
     $.getJSON(host + "/analysis-images/" + getUrlParameter("id"), function (data) {
+        data["in_spec"] = !data["in_spec"]
+        
         $("#id-header").html("Sample " + data["picture_id"]);
 
         $("#overlay_left").attr("src", data["overlay_left"].replace("http://localhost:8765", host));

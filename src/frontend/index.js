@@ -23,6 +23,7 @@ $(document).ready(function($) {
         makeDisplacementOverview(data["distribution"])
         data = data["data"]
         for (var i = 0; i < data.length; i++) {
+            data[i]["in_spec"] = !data[i]["in_spec"]
             row = table.row.add(generateTableRow(data[i])).draw().node();
             $(row).addClass("clickable-row");
             $(row).data("href", "./details.html?id=" + data[i]["id"])
