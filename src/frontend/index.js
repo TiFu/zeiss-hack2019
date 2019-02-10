@@ -26,6 +26,13 @@ $(document).ready(function($) {
     });
 });
 
+$(document).ready(function($) {
+    makeDisplacementOverview([
+        [0, 1, 2, 3, 4, 5, 6],
+        [10, 20, 30, 20, 10, 0, 5]
+    ])
+});
+
 
 function generateTableRow(dataEntry) {
     console.log(dataEntry)
@@ -81,4 +88,50 @@ function getBadgeForEntry(quality) {
     } else {
         return "danger"
     }
+}
+
+
+function makeDisplacementOverview(data) {
+    Highcharts.chart('chart_container', {
+        credits: {
+            enabled: false
+        },
+        chart: {
+        zoomType: 'xy'
+        },
+        title: {
+        text: 'Distribution of Translation in Millimeter between first and second image'
+        },
+        xAxis: [{
+        categories: data[0]
+        }],
+        yAxis: [{ // Primary yAxis
+        labels: {
+            format: '{value}',
+            style: {
+            color: Highcharts.getOptions().colors[1]
+            }
+        },
+        title: {
+            text: 'Number of Samples',
+            style: {
+            color: Highcharts.getOptions().colors[1]
+            }
+        }
+        }],
+    
+        tooltip: {
+        shared: true
+        },
+    
+        series: [{
+        name: 'Displacement in Millimeter',
+        type: 'column',
+        yAxis: 0,
+        data: data[1],
+        tooltip: {
+            pointFormat: '<span style="font-weight: bold; color: {series.color}">{series.name}</span>: <b>{point.y:.2f} mm</b> '
+        }
+        }]
+    });
 }
